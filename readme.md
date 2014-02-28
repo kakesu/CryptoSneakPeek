@@ -18,7 +18,7 @@ Development roadmap
 
 This extension is meant to support as many cryptocurrencies as possible.
 
-Each currency should be implemented as a connector (e.g. as in (Chrome-Last.fm-Scrobbler)[https://github.com/david-sabata/Chrome-Last.fm-Scrobbler]) in a single javascript file.
+Each currency should be implemented as a connector (e.g. as in [Chrome-Last.fm-Scrobbler](https://github.com/david-sabata/Chrome-Last.fm-Scrobbler)) in a single javascript file.
 
 An option dialog will allow to activate/disactivate each currency.
 
