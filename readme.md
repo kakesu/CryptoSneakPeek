@@ -1,5 +1,5 @@
-Cryptocurrency Sneak Peek
-=========================
+Crypto Sneak Peek
+=================
 
 Google Chrome extension that allows you to quickly see the balance of cryptocurrency addresses mentioned on web pages. This extension is the multi-cryptocurrency extension of [Bitcoin Sneak Peek](https://github.com/steven2358/CryptoSneakPeek).
 
