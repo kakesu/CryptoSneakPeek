@@ -12,6 +12,7 @@ How to use
 
 Try it on one of our addresses:
 - BTC: 1KLoepWkHVEMksdMCsu7nc5amfTvVb2qvk
+- DOGE: D89ZgPjgiAGRoP1wcYBwKgw449txt2hiKP
 
 Development roadmap
 -------------------

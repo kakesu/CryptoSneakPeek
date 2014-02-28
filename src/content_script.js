@@ -1,5 +1,5 @@
 // Bitcoin Sneak Peek: Instantly see the balance of a 
-// Bitcoin address mentioned on any web page.
+// Bitcoin and Dogecoin address mentioned on any web page.
 //
 // Copyright (c) 2014 Steven Van Vaerenbergh
 //
@@ -56,7 +56,6 @@ function addEventListenerByClass(className, event, fn) {
         list[i].addEventListener(event, fn, false);
     }
 }
-
 /**
  * Insert a span inside a text node.
  * From http://stackoverflow.com/a/374187
@@ -66,7 +65,11 @@ function insertSpanInTextNode(textNode,spanKey,spanClass,at) {
   var span = document.createElement("span");
   span.setAttribute('key',spanKey);
   span.className = spanClass;
-  span.appendChild(document.createTextNode(''));
+  var textHolderDiv = document.createElement("div");
+  var textNodeParent = textNode.parentNode;
+  textHolderDiv.setAttribute('style', 'width:auto;white-space: nowrap;display:none;color:black;z-index:9999;margin-left:1em;margin-top:-1.2em;border:solid 1px #BEBEBE;background:#FAFAFA;position:absolute;-moz-border-radius:5px;border-radius:5px;');
+  textHolderDiv.appendChild(document.createTextNode(''));
+  span.appendChild( textHolderDiv );
 
   // split the text node into two and add new span
   textNode.parentNode.insertBefore(span, textNode.splitText(at));
@@ -84,7 +87,10 @@ function insertSpanAfterLink(textNode,spanKey,spanClass) {
       span.setAttribute('key',spanKey);
 	  span.className = spanClass;
       span.appendChild(document.createTextNode(''));
-	  
+	  var textHolderDiv = document.createElement("div");
+	  textHolderDiv.setAttribute('style', 'width:auto;white-space: nowrap;color:black;z-index:9999;display:none;margin-left:1em;margin-top:-1.2em;border:solid 1px #BEBEBE;background:#FAFAFA;position:absolute;-moz-border-radius:5px;border-radius:5px;');
+	  textHolderDiv.appendChild(document.createTextNode(''));
+	  span.appendChild(textHolderDiv);
 	  // add the span after the link
 	  curNode.parentNode.insertBefore(span,curNode.nextSibling);
 	  return true;
@@ -146,6 +152,29 @@ function loadBlockExplorerData(node,publicKey) {
 }
 
 /**
+ * Load data from dogechain.info.
+ **/
+function loadDogeChainData(node,publicKey) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var status = xhr.status;
+			if (status == 200) {
+				var myBalance = xhr.response;
+				loadDogechainReceived(node,publicKey,myBalance);
+			} else {
+				node.innerHTML = '<a href="https://dogechain.info/address/'+ publicKey +'" target="_blank">Dogechain</a> not available.';
+				console.log('Dogechain not available. Error '+status+'.');
+			}
+		}
+	}
+	var url = 'https://dogechain.info/chain/Dogecoin/q/addressbalance/'+publicKey;
+	
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+
+/**
  * Load received amount from blockexplorer.com and write to span.
  **/
 function loadBlockExplorerReceived(node,publicKey,myBalance) {
@@ -169,19 +198,59 @@ function loadBlockExplorerReceived(node,publicKey,myBalance) {
 }
 
 /**
+ * Load received amount from  dogechain.info. and write to span.
+ **/
+function loadDogechainReceived(node,publicKey,myBalance) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			var status = xhr.status;
+			if (status == 200) {
+				var myReceived = xhr.response;
+				node.innerHTML = 'Balance: '+ myBalance + ' DOGE. Received: '+ myReceived + ' DOGE. <a href="https://dogechain.info/address/'+ publicKey +'" target="_blank">Dogechain</a>';
+			} else {
+				node.innerHTML = '<a href="https://dogechain.info/address/'+ publicKey +'" target="_blank">Dogechain</a> not available.';
+				console.log('BlockExplorer not available. Error '+status+'.');
+			}
+		}
+	}
+	var url = 'https://dogechain.info/chain/Dogecoin/q/getreceivedbyaddress/'+publicKey;
+	
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+
+/**
  * Action to perform when clicking on icon.
  **/
 function bbToggle(){
-  if (this.nextSibling.innerHTML == ''){
-    this.nextSibling.style.display = 'inline';
+  var prevElem = this.previousElementSibling;
+  if (prevElem.innerHTML == ''){
+    prevElem.style.display = 'inline';
     var publicKey = this.parentNode.getAttribute('key');
-    loadData(this.nextSibling,publicKey);
+    loadData(prevElem,publicKey);
   }
   else {
-    if (this.nextSibling.style.display == 'none') {
-      this.nextSibling.style.display = 'inline';
+    if (prevElem.style.display == 'none') {
+      prevElem.style.display = 'inline';
     } else {
-      this.nextSibling.style.display = 'none';
+      prevElem.style.display = 'none';
+    }
+  }
+}
+
+function dcToggle(){
+  var prevElem = this.previousElementSibling;
+  if (prevElem.innerHTML == ''){
+    prevElem.style.display = 'inline';
+    var publicKey = this.parentNode.getAttribute('key');
+    loadDogeChainData(prevElem,publicKey);
+  }
+  else {
+    if (prevElem.style.display == 'none') {
+      prevElem.style.display = 'inline';
+    } else {
+      prevElem.style.display = 'none';
     }
   }
 }
@@ -206,6 +275,23 @@ function addHolderContent() {
     span.appendChild(document.createTextNode(''));
     list[i].appendChild(span);
   }
+  // doge
+	var list = document.getElementsByClassName('dcHolder');
+  for (var i = 0, len = list.length; i < len; i++) {
+
+    var img = document.createElement("img");
+	img.src = chrome.extension.getURL("i/dogecoinsneakpeak32.png");
+	img.className = 'dogecoinBalanceIcon';
+	img.setAttribute('title','Dogecoin Sneak Peek');
+	img.setAttribute('alt','Dogecoin Sneak Peek');
+	img.style.cssText = 'height:1em;vertical-align:-10%;cursor:pointer;margin-left:.5em;display:inline;';
+	list[i].appendChild(img);
+	
+    var span = document.createElement("span");
+	span.style.cssText = 'margin:0 0 0 .3em;display:none';
+    span.appendChild(document.createTextNode(''));
+    list[i].appendChild(span);
+  }
 }
 
 /**
@@ -220,6 +306,8 @@ function processTextNode(textNode)
 	**/
 	
 	var re = /\b[13][1-9A-HJ-NP-Za-km-z]{26,33}\b/g
+	//From http://www.reddit.com/r/dogecoindev/comments/1y60ov/regular_expression_to_check_if_wallet_adress_is/
+	var doge_re = /\b[D]{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}\b/g;
 	var val = textNode.nodeValue;
 	
 	if (re.test(val)) { // exclude case 1
@@ -245,9 +333,34 @@ function processTextNode(textNode)
 		  curNode = textNode.parentNode.childNodes[2*counter];
 		}
 	  }
+	}// find the doge
+	else if( doge_re.test(val)) { // exclude case 1
+	  if (nodeInLink(textNode)) { // case 3
+	    var publicKeys = val.match(doge_re);
+		var publicKey = publicKeys[0];
+		
+		insertSpanAfterLink(textNode,publicKey,'dcHolder');	
+	  }
+	  else { // case 2
+		var myRe = /\b[D]{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}\b/g;
+		
+		// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
+		var myArray;
+		var prev = 0;
+		var counter = 0;
+		var curNode = textNode;
+		while ((myArray = myRe.exec(val)) !== null)
+		{
+		  insertSpanInTextNode(curNode,myArray[0],'dcHolder',myRe.lastIndex-prev);		  
+		  prev = myRe.lastIndex;
+		  counter = counter + 1;
+		  curNode = textNode.parentNode.childNodes[2*counter];
+		}
+	  }
 	}
 }
 
 walk(document.body);
 addHolderContent();
 addEventListenerByClass('bitcoinBalanceIcon', 'click', bbToggle); 
+addEventListenerByClass('dogecoinBalanceIcon', 'click', dcToggle); 
