@@ -236,7 +236,7 @@ function loadDogechainReceived(node,publicKey,myBalance) {
 				node.innerHTML = 'Balance: '+ myBalance + ' DOGE. Received: '+ myReceived + ' DOGE. <a href="https://dogechain.info/address/'+ publicKey +'" target="_blank">Dogechain</a>';
 			} else {
 				node.innerHTML = '<a href="https://dogechain.info/address/'+ publicKey +'" target="_blank">Dogechain</a> not available.';
-				console.log('BlockExplorer not available. Error '+status+'.');
+				console.log('Dogechain not available. Error '+status+'.');
 			}
 		}
 	}
