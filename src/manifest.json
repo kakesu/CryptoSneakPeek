@@ -5,10 +5,11 @@
 	"name": "Crypto Sneak Peek",
 	"version": "0.5",
 	"description": "Instantly see the balance of a cryptocurrency address mentioned on any web page.",
-	"permissions": ["https://blockchain.info/","https://blockexplorer.com/", "https://dogechain.info/"],
+	"permissions": ["https://blockchain.info/","https://blockexplorer.com/", "https://dogechain.info/", "http://khashier.com/"],
 	"web_accessible_resources": [
 		"i/bitcoinsneakpeak32.png",
-		"i/dogecoinsneakpeak32.png"
+		"i/dogecoinsneakpeak32.png",
+		"i/clamcoinsneakpeak32.png"
 	],
 	"icons": {
 		"128": "i/logo128x128.png",
