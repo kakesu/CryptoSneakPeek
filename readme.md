@@ -13,6 +13,7 @@ How to use
 Try it on one of our addresses:
 - BTC: 1KLoepWkHVEMksdMCsu7nc5amfTvVb2qvk
 - DOGE: D89ZgPjgiAGRoP1wcYBwKgw449txt2hiKP
+- CLAM: xCFG2Bzfa4jeCpsAha3RxPtL7sNctDDCdG
 
 Development roadmap
 -------------------
